@@ -1,4 +1,4 @@
-package com.example.effectivemobiletest.ui.theme
+package com.example.effectivemobiletest.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
