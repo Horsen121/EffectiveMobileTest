@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Effective Mobile Test</string>
+    <string name="app_account">Аккаунт</string>
 </resources>

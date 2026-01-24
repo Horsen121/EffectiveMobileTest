@@ -49,6 +49,7 @@ dependencies {
     api(libs.androidx.compose.ui.graphics)
     api(libs.androidx.compose.ui.tooling.preview)
     api(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.foundation)
 
     testImplementation(libs.junit)
     testImplementation(libs.hilt.android.testing)

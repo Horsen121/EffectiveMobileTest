@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.favourites.FavouritesScreen
 import com.example.login.LoginScreen
 import com.example.main.MainScreen
-import com.example.ui.elements.BottomNavPanel
+import com.example.ui.AccountScreen
 import com.example.ui.theme.EffectiveMobileTestTheme
 
 class MainActivity : ComponentActivity() {
@@ -43,7 +43,7 @@ fun Main() {
     Scaffold(
         bottomBar = {
             if (currentRoute !in listOf(Routing.LoginScreen.route)) {
-                BottomNavPanel(navController)
+                BottomNavPanel(navController, currentRoute)
             }
         },
         modifier = Modifier.fillMaxSize()
@@ -63,6 +63,9 @@ fun Main() {
             }
             composable(Routing.FavouritesScreen.route) {
                 FavouritesScreen(navController = navController, paddingValues = innerPadding)
+            }
+            composable(Routing.AccountScreen.route) {
+                AccountScreen(navController = navController, paddingValues = innerPadding)
             }
         }
     }
