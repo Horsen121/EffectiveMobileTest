@@ -6,7 +6,6 @@ import androidx.navigation.NavController
 
 @Composable
 fun AccountScreen(
-    navController: NavController,
     paddingValues: PaddingValues
 ) {
 

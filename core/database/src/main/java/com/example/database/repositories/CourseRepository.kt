@@ -8,6 +8,6 @@ class CourseRepository(
 ) {
     fun getPatients() = dao.getCourses()
     suspend fun getCourse(id: Int) = dao.getCourseById(id)
-    suspend fun insertPatient(item: Course) = dao.insertCourse(item)
-    suspend fun deletePatient(item: Course) = dao.deleteCourse(item)
+    suspend fun insertCourse(item: Course) = dao.insertCourse(item)
+    suspend fun deleteCourse(item: Course) = dao.deleteCourse(item)
 }

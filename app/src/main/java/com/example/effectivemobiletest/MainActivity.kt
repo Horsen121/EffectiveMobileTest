@@ -53,13 +53,13 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(Routing.MainScreen.route) {
-                            MainScreen(navController = navController, paddingValues = innerPadding)
+                            MainScreen(paddingValues = innerPadding)
                         }
                         composable(Routing.FavouritesScreen.route) {
-                            FavouritesScreen(navController = navController, paddingValues = innerPadding)
+                            FavouritesScreen(paddingValues = innerPadding)
                         }
                         composable(Routing.AccountScreen.route) {
-                            AccountScreen(navController = navController, paddingValues = innerPadding)
+                            AccountScreen(paddingValues = innerPadding)
                         }
                     }
                 }
