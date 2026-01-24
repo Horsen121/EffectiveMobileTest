@@ -1,3 +1,11 @@
 <resources>
     <string name="login_">Вход</string>
+    <string name="login_email_title">Email</string>
+    <string name="login_email_placeholder">example@gmail.com</string>
+    <string name="login_email_error">Неверный формат почты или присутствует кирилица</string>
+    <string name="login_password_title">Пароль</string>
+    <string name="login_password_placeholder">Введите пароль</string>
+    <string name="login_hasnot_account">Нет аккаунта?</string>
+    <string name="login_reg">Регистрация</string>
+    <string name="login_forgot_password">Забыл пароль</string>
 </resources>

@@ -40,10 +40,12 @@ fun AppButton(
     @StringRes text: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     color: Color = MaterialTheme.colorScheme.tertiary
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         shape = MaterialTheme.shapes.extraLarge,
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = color,
@@ -62,6 +64,7 @@ fun AppTextButton(
     @StringRes colorizedText: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     @StringRes primaryText: Int? = null,
     isHeadline: Boolean = false
 ) {
@@ -78,7 +81,7 @@ fun AppTextButton(
             isHeadline = isHeadline,
             color = MaterialTheme.colorScheme.tertiary,
             modifier = modifier
-                .clickable(onClick = onClick)
+                .clickable(onClick = { if(enabled) onClick() })
         )
     }
 }
@@ -95,7 +98,7 @@ fun VkOkButton(
     ) {
         Button(
             onClick = {
-                // open https://vk.com/
+                // TODO open https://vk.com/
             },
             shape = MaterialTheme.shapes.extraLarge,
             colors = ButtonDefaults.buttonColors().copy(
@@ -122,7 +125,7 @@ fun VkOkButton(
                     Brush.verticalGradient(listOf(OKLightColor, OKDarkColor))
                 )
                 .clickable {
-                    // open https://ok.ru/
+                    // TODO open https://ok.ru/
                 },
             contentAlignment = Alignment.Center
         ) {
