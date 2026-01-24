@@ -1,0 +1,1 @@
+-keep class com.example.core.network.dto.** { *; }
