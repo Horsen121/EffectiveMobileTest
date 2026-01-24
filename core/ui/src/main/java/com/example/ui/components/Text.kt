@@ -1,14 +1,13 @@
 package com.example.ui.components
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,43 +35,48 @@ fun AppTextField(
     @StringRes placeholder: Int,
     modifier: Modifier = Modifier,
     height: Dp = 40.dp,
-    @DrawableRes leadingIcon: Int? = null,
-    @StringRes leadingIconDesc: Int? = null,
+    @StringRes title: Int? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(
         imeAction = ImeAction.Done
-    )
+    ),
+    isError: Boolean = false,
+    @StringRes supportingText: Int? = null
 ) {
-    TextField(
-        value = text,
-        onValueChange = onValueChange,
-        placeholder = {
-            if (text.isEmpty())
-                Text(
-                    text = stringResource(placeholder),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-        },
-        shape = MaterialTheme.shapes.extraLarge,
-        leadingIcon = {
-            if (leadingIcon != null)
-                Image(
-                    painterResource(leadingIcon),
-                    if (leadingIconDesc != null) stringResource(leadingIconDesc) else null,
-                    Modifier.fillMaxHeight()
-                )
-        },
-        colors = TextFieldDefaults.colors().copy(
-            focusedContainerColor = MaterialTheme.colorScheme.primary,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        keyboardOptions = keyboardOptions,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(height)
-    )
+    Column() {
+        if(title != null) {
+            LabelText(title, isHeadline = true)
+            Spacer(Modifier.height(8.dp))
+        }
+        TextField(
+            value = text,
+            onValueChange = onValueChange,
+            placeholder = {
+                if (text.isEmpty())
+                    Text(
+                        text = stringResource(placeholder),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+            },
+            shape = MaterialTheme.shapes.extraLarge,
+            leadingIcon = leadingIcon,
+            colors = TextFieldDefaults.colors().copy(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            keyboardOptions = keyboardOptions,
+            isError = isError,
+            supportingText = {
+                if(isError && supportingText != null) BodyText(supportingText)
+            },
+            modifier = modifier
+                .fillMaxWidth()
+                .heightIn(height)
+        )
+    }
 }
 
 @Composable
@@ -154,6 +157,7 @@ private fun ButtonsPreview() {
                 TitleText(R.string.ui_)
                 AppTextField("", {}, R.string.ui_)
                 AppTextField("Text", {}, R.string.ui_)
+                AppTextField("Text", {}, R.string.ui_, title = R.string.ui_)
                 LabelText(R.string.ui_)
                 LabelText(R.string.ui_, isHeadline = false)
                 BodyText(R.string.ui_)
