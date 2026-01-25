@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.example.ui.components.AppButton
 import com.example.ui.components.AppTextButton
 import com.example.ui.components.AppTextField
+import com.example.ui.components.BodyText
 import com.example.ui.components.TitleText
 import com.example.ui.components.VkOkButton
 import com.example.ui.theme.EffectiveMobileTestTheme
@@ -69,7 +70,7 @@ fun LoginScreen(
                     imeAction = ImeAction.Next
                 ),
                 isError = isError,
-                supportingText = R.string.login_email_error
+                supportingText = {if(isError) BodyText(R.string.login_email_error)}
             )
 
             AppTextField(

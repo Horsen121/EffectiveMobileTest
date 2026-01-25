@@ -1,21 +1,36 @@
 package com.example.main
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.domain.models.Course
+import com.example.ui.components.AppTextField
+import com.example.ui.components.BackgroundRow
+import com.example.ui.components.BodyText
+import com.example.ui.elements.CourseCard
 import com.example.ui.theme.EffectiveMobileTestTheme
 
 @Composable
@@ -50,13 +65,63 @@ private fun MainScreenContent(
         }
 
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().height(56.dp)
+            ) {
+                AppTextField(
+                    "", {},
+                    placeholder = R.string.main_search,
+                    leadingIcon = {
+                        Image(
+                            painterResource(R.drawable.main_search),
+                            stringResource(R.string.main_search)
+                        )
+                    },
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.fillMaxWidth(0.8f).weight(1f)
+                )
+                BackgroundRow(
+                    isRound = true,
+                    isCard = false
+                ) {
+                    Image(
+                        painterResource(R.drawable.main_filter),
+                        stringResource(R.string.main_filter)
+                    )
+                }
+            }
 
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BodyText(
+                    R.string.main_sort,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+                Image(
+                    painterResource(R.drawable.main_sort),
+                    stringResource(R.string.main_sort)
+                )
+            }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(state.courses) {course ->
+                    CourseCard(
+                        course,
+                        onBookmark
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
         }
     }
 }

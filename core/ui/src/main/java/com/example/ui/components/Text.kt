@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,17 +34,18 @@ fun AppTextField(
     text: String,
     onValueChange: (String) -> Unit,
     @StringRes placeholder: Int,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth(),
     height: Dp = 40.dp,
     @StringRes title: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(
         imeAction = ImeAction.Done
     ),
+    color: Color = MaterialTheme.colorScheme.primary,
     isError: Boolean = false,
-    @StringRes supportingText: Int? = null
+    supportingText: @Composable (() -> Unit)? = null
 ) {
-    Column() {
+    Column {
         if(title != null) {
             LabelText(title, isHeadline = true)
             Spacer(Modifier.height(8.dp))
@@ -62,19 +64,16 @@ fun AppTextField(
             shape = MaterialTheme.shapes.extraLarge,
             leadingIcon = leadingIcon,
             colors = TextFieldDefaults.colors().copy(
-                focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedContainerColor = color,
+                unfocusedContainerColor = color,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
             keyboardOptions = keyboardOptions,
             isError = isError,
-            supportingText = {
-                if(isError && supportingText != null) BodyText(supportingText)
-            },
+            supportingText = supportingText,
             modifier = modifier
-                .fillMaxWidth()
-                .heightIn(height)
+                .heightIn(min = height)
         )
     }
 }
@@ -149,6 +148,7 @@ fun BodyText(
         style = if(isHeadline) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
         color = color,
         maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
         modifier = modifier
     )
 }
@@ -162,20 +162,6 @@ fun ButtonText(
 ) {
     Text(
         text = stringResource(text),
-        style = if(isHeadline) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelSmall,
-        color = color,
-        modifier = modifier
-    )
-}
-@Composable
-fun ButtonText(
-    text: String,
-    modifier: Modifier = Modifier,
-    isHeadline: Boolean = true,
-    color: Color = MaterialTheme.colorScheme.onBackground
-) {
-    Text(
-        text = text,
         style = if(isHeadline) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelSmall,
         color = color,
         modifier = modifier
