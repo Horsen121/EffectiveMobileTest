@@ -107,6 +107,20 @@ fun LabelText(
         modifier = modifier
     )
 }
+@Composable
+fun LabelText(
+    text: String,
+    modifier: Modifier = Modifier,
+    isHeadline: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.onBackground
+) {
+    Text(
+        text = text,
+        style = if(isHeadline) MaterialTheme.typography.titleSmall else MaterialTheme.typography.labelSmall,
+        color = color,
+        modifier = modifier
+    )
+}
 
 @Composable
 fun BodyText(
@@ -122,6 +136,22 @@ fun BodyText(
         modifier = modifier
     )
 }
+@Composable
+fun BodyText(
+    text: String,
+    modifier: Modifier = Modifier,
+    isHeadline: Boolean = true,
+    maxLines: Int = 1,
+    color: Color = MaterialTheme.colorScheme.onPrimary
+) {
+    Text(
+        text = text,
+        style = if(isHeadline) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
+        color = color,
+        maxLines = maxLines,
+        modifier = modifier
+    )
+}
 
 @Composable
 fun ButtonText(
@@ -132,6 +162,20 @@ fun ButtonText(
 ) {
     Text(
         text = stringResource(text),
+        style = if(isHeadline) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelSmall,
+        color = color,
+        modifier = modifier
+    )
+}
+@Composable
+fun ButtonText(
+    text: String,
+    modifier: Modifier = Modifier,
+    isHeadline: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.onBackground
+) {
+    Text(
+        text = text,
         style = if(isHeadline) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelSmall,
         color = color,
         modifier = modifier

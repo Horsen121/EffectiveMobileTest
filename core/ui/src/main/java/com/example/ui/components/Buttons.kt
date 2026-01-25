@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -90,6 +91,7 @@ fun AppTextButton(
 fun VkOkButton(
     modifier: Modifier = Modifier
 ) {
+    val uriHandler = LocalUriHandler.current
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
@@ -98,7 +100,7 @@ fun VkOkButton(
     ) {
         Button(
             onClick = {
-                // TODO open https://vk.com/
+                uriHandler.openUri("https://vk.com/")
             },
             shape = MaterialTheme.shapes.extraLarge,
             colors = ButtonDefaults.buttonColors().copy(
@@ -107,7 +109,6 @@ fun VkOkButton(
             ),
             modifier = Modifier
                 .weight(1f)
-//                .fillMaxWidth(1f)
         ) {
             Image(
                 painterResource(R.drawable.ui_vk),
@@ -125,7 +126,7 @@ fun VkOkButton(
                     Brush.verticalGradient(listOf(OKLightColor, OKDarkColor))
                 )
                 .clickable {
-                    // TODO open https://ok.ru/
+                    uriHandler.openUri("https://ok.ru/")
                 },
             contentAlignment = Alignment.Center
         ) {

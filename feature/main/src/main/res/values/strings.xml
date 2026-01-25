@@ -1,3 +1,4 @@
 <resources>
     <string name="main_">Главная</string>
+    <string name="main_error_network">Неизвестная ошибка сети</string>
 </resources>
