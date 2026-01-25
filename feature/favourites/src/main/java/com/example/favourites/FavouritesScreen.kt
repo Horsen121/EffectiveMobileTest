@@ -6,9 +6,8 @@ import androidx.navigation.NavController
 
 @Composable
 fun FavouritesScreen(
-    navController: NavController,
     paddingValues: PaddingValues,
-    // viewModel: FavouritesScreenVM = hiltViewModel()
+    //viewModel: FavouritesScreenVM = hiltViewModel()
 ) {
 
 }

@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CourseDAO {
-    @Query("SELECT * FROM `courses`")
+    @Query("SELECT * FROM `courses` WHERE hasLike = 1")
     fun getCourses(): Flow<List<Course>>
 
     @Query("SELECT * FROM `courses` WHERE id = :id")
     suspend fun getCourseById(id: Int): Course?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCourse(item: Course): Int
+    suspend fun insertCourse(item: Course)
 
     @Delete
-    suspend fun deleteCourse(item: Course): Int
+    suspend fun deleteCourse(item: Course)
 }

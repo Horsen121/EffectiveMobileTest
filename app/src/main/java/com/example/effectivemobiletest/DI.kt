@@ -1,7 +1,6 @@
 package com.example.effectivemobiletest
 
 import android.content.Context
-import androidx.annotation.StringRes
 import androidx.room.Room
 import com.example.database.AppDB
 import com.example.database.dao.CourseDAO
@@ -10,7 +9,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -30,11 +28,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideVisitDao(db: AppDB): CourseDAO = db.courseDao()
-
-    @Singleton
-    class StringResourceProvider @Inject constructor(
-        @ApplicationContext private val context: Context
-    ) {
-        fun getString(@StringRes resId: Int) = context.getString(resId)
-    }
 }

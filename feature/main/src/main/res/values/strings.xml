@@ -1,3 +1,7 @@
 <resources>
     <string name="main_">Главная</string>
+    <string name="main_error_network">Неизвестная ошибка сети</string>
+    <string name="main_search">Search courses...</string>
+    <string name="main_filter">Filter courses...</string>
+    <string name="main_sort">По дате добавления</string>
 </resources>
