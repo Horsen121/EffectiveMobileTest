@@ -19,7 +19,9 @@ import com.example.login.LoginScreen
 import com.example.main.MainScreen
 import com.example.ui.AccountScreen
 import com.example.ui.theme.EffectiveMobileTestTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

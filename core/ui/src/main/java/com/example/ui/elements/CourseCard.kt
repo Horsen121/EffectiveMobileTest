@@ -1,5 +1,6 @@
 package com.example.ui.elements
 
+import android.content.res.Resources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import com.example.ui.components.BackgroundRow
 import com.example.ui.components.BodyText
 import com.example.ui.components.LabelText
 import com.example.ui.theme.EffectiveMobileTestTheme
+import com.example.ui.utils.toPrice
 import com.example.ui.utils.toTextDate
 
 @Composable
@@ -84,6 +86,9 @@ fun CourseCard(
                                 Image(
                                     painterResource(R.drawable.ui_bookmark),
                                     stringResource(R.string.ui_course_bookmark),
+                                    colorFilter = ColorFilter.tint(
+                                        if (course.hasLike) MaterialTheme.colorScheme.tertiary
+                                                else MaterialTheme.colorScheme.onBackground),
                                     modifier = Modifier
                                         .clickable(onClick = { onBookmark(course) })
                                 )
@@ -150,7 +155,7 @@ fun CourseCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     LabelText(
-                        text = "${course.price} ₽"
+                        text = "${course.price.toPrice()} ₽"
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -181,7 +186,7 @@ private fun CourseCardPreview() {
         title = "Java-разработчик с нуля",
         text = "Освойте backend-разработку и программирование на Java, фреймворки Spring и Maven, " +
                 "работу с базами данных и API. Создайте свой собственный проект, собрав портфолио и став востребованным специалистом для любой IT компании.",
-        price = 999,
+        price = 2999,
         rate = 4.9f,
         startDate = "2024-05-22",
         hasLike = false,

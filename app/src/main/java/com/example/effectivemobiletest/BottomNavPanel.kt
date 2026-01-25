@@ -86,7 +86,7 @@ fun BottomNavPanel(
                 },
                 label = {
                     LabelText(
-                        text =com.example.main.R.string.main_,
+                        text = R.string.app_account,
                         color = if (currentRoute == Routing.AccountScreen.route)
                             MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onBackground
                     )

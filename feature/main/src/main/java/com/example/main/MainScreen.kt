@@ -1,6 +1,7 @@
 package com.example.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,6 +43,7 @@ fun MainScreen(
     MainScreenContent(
         state,
         { viewModel.errorShown() },
+        { viewModel.onSort() },
         { viewModel.changeBookmarkOfCourse(it) },
         paddingValues
     )
@@ -51,6 +53,7 @@ fun MainScreen(
 private fun MainScreenContent(
     state: CourseUiState,
     errorShown: () -> Unit,
+    onSort: () -> Unit,
     onBookmark: (Course) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -99,7 +102,9 @@ private fun MainScreenContent(
             }
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .clickable(onClick = { onSort() })
             ) {
                 BodyText(
                     R.string.main_sort,
@@ -192,8 +197,7 @@ private fun MainScreenPreview() {
             contentWindowInsets = WindowInsets(left = 16.dp, right = 16.dp, top = 32.dp),
             modifier = Modifier.fillMaxSize()
         ) { padding ->
-            MainScreenContent(CourseUiState(courses), {}, {}, padding)
+            MainScreenContent(CourseUiState(courses), {}, {}, {}, padding)
         }
     }
-
 }

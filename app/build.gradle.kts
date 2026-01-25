@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id("androidx.room")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -45,7 +46,10 @@ room {
 
 dependencies {
     implementation(project(":core:ui"))
+    implementation(project(":core:data"))
     implementation(project(":core:database"))
+    implementation(project(":core:network"))
+    implementation(project(":domain"))
     implementation(project(":feature:login"))
     implementation(project(":feature:favourites"))
     implementation(project(":feature:main"))
@@ -72,4 +76,9 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     testImplementation(libs.androidx.room.testing)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.android.compiler)
 }

@@ -8,8 +8,9 @@ import com.example.domain.repositories.CourseRepository
 import com.example.network.RemoteApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class CourseRepositoryImpl(
+class CourseRepositoryImpl @Inject constructor(
     private val dao: CourseDAO
 ): CourseRepository {
     override suspend fun getCourses(fromNetwork: Boolean): Flow<List<DomainCourse>> {
