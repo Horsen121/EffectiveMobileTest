@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.course.CourseState
 import com.example.course.models.Course
-import com.example.course.repositories.CourseRepository
+import com.example.course.usecase.DeleteCourseUseCase
+import com.example.course.usecase.GetCoursesUseCase
+import com.example.course.usecase.InsertCourseUseCase
 import com.example.ui.UiModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenVM @Inject constructor(
-    private val courseRepository: CourseRepository,
+    private val getCourses: GetCoursesUseCase,
+    private val deleteCourse: DeleteCourseUseCase,
+    private val insertCourse: InsertCourseUseCase,
     private val stringProvider: UiModule.StringResourceProvider
 ): ViewModel() {
 
@@ -31,7 +35,7 @@ class MainScreenVM @Inject constructor(
         _state.value = CourseState.Loading
         viewModelScope.launch {
             try {
-                val data = courseRepository.getCourses(true).first()
+                val data = getCourses().first()
                 _state.value = CourseState.Content(data)
             } catch (e: Exception) {
                 _state.value = CourseState.Error(e.localizedMessage ?: stringProvider.getString(R.string.main_error_network))
@@ -45,8 +49,8 @@ class MainScreenVM @Inject constructor(
 
         viewModelScope.launch {
             if (course.hasLike)
-                courseRepository.deleteCourse(course)
-            else courseRepository.insertCourse(course.copy(hasLike = true))
+                deleteCourse(course)
+            else insertCourse(course.copy(hasLike = true))
         }.let {
             val idx = (_state.value as CourseState.Content).courses.indexOf(course)
             _state.value = CourseState.Content(

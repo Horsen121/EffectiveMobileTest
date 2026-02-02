@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -46,4 +49,9 @@ dependencies {
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.foundation)
+
+    // Hilt
+    api(libs.hilt.android)
+    api(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.android.compiler)
 }

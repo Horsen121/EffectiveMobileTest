@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
 
-const val BASE_URL = "https://google.com/"
+const val BASE_URL = "https://drive.usercontent.google.com"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
@@ -15,7 +15,7 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface RemoteApiService {
-    @GET
+    @GET("")
     suspend fun getCourses(): Response<List<GetCourseResponse>>
 }
 
