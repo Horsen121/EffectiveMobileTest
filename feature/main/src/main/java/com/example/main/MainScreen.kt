@@ -1,5 +1,8 @@
 package com.example.main
 
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +24,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.domain.CourseState
 import com.example.domain.models.Course
 import com.example.ui.components.AppTextField
 import com.example.ui.components.BackgroundRow
@@ -39,23 +44,35 @@ fun MainScreen(
     paddingValues: PaddingValues,
     viewModel: MainScreenVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadData()
     }
 
-    MainScreenContent(
-        state,
-        { viewModel.onSort() },
-        { viewModel.changeBookmarkOfCourse(it) },
-        paddingValues
-    )
+    Crossfade(targetState = state) { currentState ->
+        when (currentState) {
+            is CourseState.Initial, CourseState.Loading -> {}
+            is CourseState.Content -> {
+                MainScreenContent(
+                    currentState,
+                    { viewModel.onSort() },
+                    { viewModel.changeBookmarkOfCourse(it) },
+                    paddingValues
+                )
+            }
+            is CourseState.Error -> {
+                Toast.makeText(context, currentState.message, Toast.LENGTH_SHORT).show()
+                Log.e("TAG", "PizzaCardScreen: ${currentState.message}")
+            }
+        }
+    }
 }
 
 @Composable
 private fun MainScreenContent(
-    state: CourseUiState,
+    state: CourseState.Content,
     onSort: () -> Unit,
     onBookmark: (Course) -> Unit,
     paddingValues: PaddingValues
@@ -190,7 +207,7 @@ private fun MainScreenPreview() {
             modifier = Modifier.fillMaxSize()
         ) { padding ->
             MainScreenContent(
-                CourseUiState(courses),
+                CourseState.Content(courses),
                 {}, {},
                 padding
             )

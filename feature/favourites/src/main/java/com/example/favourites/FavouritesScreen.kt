@@ -1,5 +1,8 @@
 package com.example.favourites
 
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,10 +19,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.domain.CourseState
 import com.example.domain.models.Course
 import com.example.ui.components.TitleText
 import com.example.ui.elements.CourseCard
@@ -30,22 +35,34 @@ fun FavouritesScreen(
     paddingValues: PaddingValues,
     viewModel: FavouritesVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadData()
     }
 
-    FavouritesScreenContent(
-        state,
-        { viewModel.changeBookmarkOfCourse(it) },
-        paddingValues
-    )
+    Crossfade(targetState = state) { currentState ->
+        when (currentState) {
+            is CourseState.Initial, CourseState.Loading -> {}
+            is CourseState.Content -> {
+                FavouritesScreenContent(
+                    currentState,
+                    { viewModel.changeBookmarkOfCourse(it) },
+                    paddingValues
+                )
+            }
+            is CourseState.Error -> {
+                Toast.makeText(context, currentState.message, Toast.LENGTH_SHORT).show()
+                Log.e("TAG", "PizzaCardScreen: ${currentState.message}")
+            }
+        }
+    }
 }
 
 @Composable
 private fun FavouritesScreenContent(
-    state: CourseUiState,
+    state: CourseState.Content,
     onBookmark: (Course) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -141,7 +158,7 @@ private fun FavouritesScreenPreview() {
             contentWindowInsets = WindowInsets(left = 16.dp, right = 16.dp, top = 32.dp),
             modifier = Modifier.fillMaxSize()
         ) { padding ->
-            FavouritesScreenContent(CourseUiState(courses), {}, padding)
+            FavouritesScreenContent(CourseState.Content(courses), {}, padding)
         }
     }
 }
