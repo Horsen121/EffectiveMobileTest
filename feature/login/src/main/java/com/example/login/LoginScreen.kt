@@ -61,8 +61,10 @@ fun LoginScreen(
             AppTextField(
                 text = email,
                 onValueChange = {
-                    email = it
-                    isError = it.contains(Regex("[а-яА-ЯёЁ]"))
+                    val filtered = it.filter { ch ->
+                        ch.code !in 0x0400..0x04FF
+                    }
+                    email = filtered
                 },
                 placeholder = R.string.login_email_placeholder,
                 title = R.string.login_email_title,

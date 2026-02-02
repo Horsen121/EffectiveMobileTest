@@ -40,7 +40,7 @@ room {
 dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:network"))
-    implementation(project(":domain"))
+    implementation(project(":shared"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

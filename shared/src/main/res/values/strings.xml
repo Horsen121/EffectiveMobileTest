@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shared_course_detailed">Подробнее</string>
+    <string name="shared_course_image">Course image</string>
+    <string name="shared_course_bookmark">Course bookmark</string>
+</resources>

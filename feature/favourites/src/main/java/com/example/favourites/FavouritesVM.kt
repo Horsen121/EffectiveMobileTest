@@ -2,76 +2,58 @@ package com.example.favourites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.models.Course
-import com.example.domain.repositories.CourseRepository
+import com.example.course.CourseState
+import com.example.course.models.Course
+import com.example.course.usecase.DeleteCourseUseCase
+import com.example.course.usecase.GetFavouritesCoursesUseCase
 import com.example.ui.UiModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class CourseUiState(
-    val courses: List<Course> = emptyList(),
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
-)
 
 @HiltViewModel
 class FavouritesVM @Inject constructor(
-    private val courseRepository: CourseRepository,
+    private val getCourses: GetFavouritesCoursesUseCase,
+    private val deleteCourse: DeleteCourseUseCase,
     private val stringProvider: UiModule.StringResourceProvider
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(CourseUiState())
-    val uiState: StateFlow<CourseUiState> = _uiState.asStateFlow()
 
-    init {
-        loadCurses()
-    }
+    private val _state = MutableStateFlow<CourseState>(CourseState.Initial)
+    val state: StateFlow<CourseState> = _state.asStateFlow()
 
-    private fun loadCurses() {
+
+    fun loadData() {
+        if (_state.value is CourseState.Loading || _state.value is CourseState.Content)
+            return
+
+        _state.value = CourseState.Loading
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
             try {
-                val data = courseRepository.getCourses(false).first()
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        courses = data,
-                        errorMessage = null
-                    )
-                }
+                val data = getCourses().first()
+                _state.value = CourseState.Content(data)
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = e.localizedMessage ?: stringProvider.getString(R.string.favourites_error_db)
-                    )
-                }
+                _state.value = CourseState.Error(e.localizedMessage ?: stringProvider.getString(R.string.favourites_error_db))
             }
         }
     }
 
     fun changeBookmarkOfCourse(course: Course) {
-        viewModelScope.launch {
-            courseRepository.deleteCourse(course)
-        }.let {
-            _uiState.update {
-                it.copy(
-                    courses = it.courses.toMutableList().apply {
-                        this.remove(course)
-                    }
-                )
-            }
-        }
-    }
+        if (_state.value !is CourseState.Content)
+            return
 
-    fun errorShown() {
-        _uiState.update { it.copy(errorMessage = null) }
+        viewModelScope.launch {
+            deleteCourse(course)
+        }.let {
+            _state.value = CourseState.Content(
+                (_state.value as CourseState.Content).courses.toMutableList().apply {
+                    this.remove(course)
+                }
+            )
+        }
     }
 }

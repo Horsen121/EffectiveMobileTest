@@ -1,5 +1,9 @@
-package com.example.domain.models
+package com.example.course.models
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Course(
     val id: Int,
     val title: String,
@@ -9,4 +13,4 @@ data class Course(
     val startDate: String,
     val hasLike: Boolean,
     val publishDate: String,
-)
+) : Parcelable

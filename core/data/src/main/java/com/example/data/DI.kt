@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.example.data.repositories.CourseRepositoryImpl
 import com.example.database.AppDB
 import com.example.database.dao.CourseDAO
-import com.example.domain.repositories.CourseRepository
+import com.example.course.repositories.CourseRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

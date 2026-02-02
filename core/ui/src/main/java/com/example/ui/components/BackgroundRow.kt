@@ -41,7 +41,6 @@ fun BackgroundRow(
             .conditional(!isCard && height == 22.dp) {
                 fillMaxSize()
             }
-//            .height(if(isCard && height != 22.dp) 22.dp else height)
             .conditional(isRound) {
                 widthIn(min = height, max = height)
                 aspectRatio(1f, true)
