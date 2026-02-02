@@ -1,6 +1,5 @@
 package com.example.ui.elements
 
-import android.content.res.Resources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

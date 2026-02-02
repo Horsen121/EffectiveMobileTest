@@ -50,6 +50,7 @@ fun AppTextField(
             LabelText(title, isHeadline = true)
             Spacer(Modifier.height(8.dp))
         }
+        
         TextField(
             value = text,
             onValueChange = onValueChange,

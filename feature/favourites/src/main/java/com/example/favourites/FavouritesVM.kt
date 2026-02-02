@@ -25,14 +25,12 @@ class FavouritesVM @Inject constructor(
     private val courseRepository: CourseRepository,
     private val stringProvider: UiModule.StringResourceProvider
 ): ViewModel() {
+
     private val _uiState = MutableStateFlow(CourseUiState())
     val uiState: StateFlow<CourseUiState> = _uiState.asStateFlow()
 
-    init {
-        loadCurses()
-    }
 
-    private fun loadCurses() {
+    fun loadData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
@@ -69,9 +67,5 @@ class FavouritesVM @Inject constructor(
                 )
             }
         }
-    }
-
-    fun errorShown() {
-        _uiState.update { it.copy(errorMessage = null) }
     }
 }

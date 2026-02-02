@@ -40,9 +40,13 @@ fun MainScreen(
     viewModel: MainScreenVM = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadData()
+    }
+
     MainScreenContent(
         state,
-        { viewModel.errorShown() },
         { viewModel.onSort() },
         { viewModel.changeBookmarkOfCourse(it) },
         paddingValues
@@ -52,80 +56,68 @@ fun MainScreen(
 @Composable
 private fun MainScreenContent(
     state: CourseUiState,
-    errorShown: () -> Unit,
     onSort: () -> Unit,
     onBookmark: (Course) -> Unit,
     paddingValues: PaddingValues
 ) {
-    if (state.isLoading && state.courses.isEmpty()) {
-//        LoadingSpinner()
-    } else {
-        state.errorMessage?.let { msg ->
-            LaunchedEffect(msg) {
-//                    snackbarHostState.showSnackbar(msg)
-                errorShown()
+    Column(
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth().height(56.dp)
+        ) {
+            AppTextField(
+                "", {},
+                placeholder = R.string.main_search,
+                leadingIcon = {
+                    Image(
+                        painterResource(R.drawable.main_search),
+                        stringResource(R.string.main_search)
+                    )
+                },
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.fillMaxWidth(0.8f).weight(1f)
+            )
+            BackgroundRow(
+                isRound = true,
+                isCard = false
+            ) {
+                Image(
+                    painterResource(R.drawable.main_filter),
+                    stringResource(R.string.main_filter)
+                )
             }
         }
 
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+                .clickable(onClick = { onSort() })
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth().height(56.dp)
-            ) {
-                AppTextField(
-                    "", {},
-                    placeholder = R.string.main_search,
-                    leadingIcon = {
-                        Image(
-                            painterResource(R.drawable.main_search),
-                            stringResource(R.string.main_search)
-                        )
-                    },
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.fillMaxWidth(0.8f).weight(1f)
-                )
-                BackgroundRow(
-                    isRound = true,
-                    isCard = false
-                ) {
-                    Image(
-                        painterResource(R.drawable.main_filter),
-                        stringResource(R.string.main_filter)
-                    )
-                }
-            }
+            BodyText(
+                R.string.main_sort,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+            Image(
+                painterResource(R.drawable.main_sort),
+                stringResource(R.string.main_sort)
+            )
+        }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .clickable(onClick = { onSort() })
-            ) {
-                BodyText(
-                    R.string.main_sort,
-                    color = MaterialTheme.colorScheme.tertiary
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(state.courses) { course ->
+                CourseCard(
+                    course,
+                    onBookmark
                 )
-                Image(
-                    painterResource(R.drawable.main_sort),
-                    stringResource(R.string.main_sort)
-                )
-            }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(state.courses) {course ->
-                    CourseCard(
-                        course,
-                        onBookmark
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -197,7 +189,11 @@ private fun MainScreenPreview() {
             contentWindowInsets = WindowInsets(left = 16.dp, right = 16.dp, top = 32.dp),
             modifier = Modifier.fillMaxSize()
         ) { padding ->
-            MainScreenContent(CourseUiState(courses), {}, {}, {}, padding)
+            MainScreenContent(
+                CourseUiState(courses),
+                {}, {},
+                padding
+            )
         }
     }
 }

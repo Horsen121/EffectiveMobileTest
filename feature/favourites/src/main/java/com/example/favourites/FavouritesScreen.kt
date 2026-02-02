@@ -31,9 +31,13 @@ fun FavouritesScreen(
     viewModel: FavouritesVM = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadData()
+    }
+
     FavouritesScreenContent(
         state,
-        { viewModel.errorShown() },
         { viewModel.changeBookmarkOfCourse(it) },
         paddingValues
     )
@@ -42,41 +46,30 @@ fun FavouritesScreen(
 @Composable
 private fun FavouritesScreenContent(
     state: CourseUiState,
-    errorShown: () -> Unit,
     onBookmark: (Course) -> Unit,
     paddingValues: PaddingValues
 ) {
-    if (state.isLoading && state.courses.isEmpty()) {
-//        LoadingSpinner()
-    } else {
-        state.errorMessage?.let { msg ->
-            LaunchedEffect(msg) {
-//                    snackbarHostState.showSnackbar(msg)
-                errorShown()
-            }
-        }
 
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+    Column(
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        TitleText(
+            R.string.favourites_
+        )
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
         ) {
-            TitleText(
-                R.string.favourites_
-            )
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(state.courses) {course ->
-                    CourseCard(
-                        course,
-                        onBookmark
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+            items(state.courses) { course ->
+                CourseCard(
+                    course,
+                    onBookmark
+                )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -148,7 +141,7 @@ private fun FavouritesScreenPreview() {
             contentWindowInsets = WindowInsets(left = 16.dp, right = 16.dp, top = 32.dp),
             modifier = Modifier.fillMaxSize()
         ) { padding ->
-            FavouritesScreenContent(CourseUiState(courses), {}, {}, padding)
+            FavouritesScreenContent(CourseUiState(courses), {}, padding)
         }
     }
 }
