@@ -1,6 +1,6 @@
-package com.example.domain
+package com.example.course
 
-import com.example.domain.models.Course
+import com.example.course.models.Course
 
 sealed interface CourseState {
     data object Initial : CourseState

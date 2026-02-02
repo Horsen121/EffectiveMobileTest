@@ -2,9 +2,9 @@ package com.example.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.CourseState
-import com.example.domain.models.Course
-import com.example.domain.repositories.CourseRepository
+import com.example.course.CourseState
+import com.example.course.models.Course
+import com.example.course.repositories.CourseRepository
 import com.example.ui.UiModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

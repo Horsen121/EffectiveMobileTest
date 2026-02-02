@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -31,12 +28,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.domain.CourseState
-import com.example.domain.models.Course
+import com.example.course.CourseState
+import com.example.course.models.Course
+import com.example.course.ui.ColumnOfCourses
 import com.example.ui.components.AppTextField
 import com.example.ui.components.BackgroundRow
 import com.example.ui.components.BodyText
-import com.example.ui.elements.CourseCard
 import com.example.ui.theme.EffectiveMobileTestTheme
 
 @Composable
@@ -84,59 +81,65 @@ private fun MainScreenContent(
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth().height(56.dp)
-        ) {
-            AppTextField(
-                "", {},
-                placeholder = R.string.main_search,
-                leadingIcon = {
-                    Image(
-                        painterResource(R.drawable.main_search),
-                        stringResource(R.string.main_search)
-                    )
-                },
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.fillMaxWidth(0.8f).weight(1f)
-            )
-            BackgroundRow(
-                isRound = true,
-                isCard = false
-            ) {
+        SearchAndFilter()
+
+        SortCourses(onSort)
+
+        ColumnOfCourses(state.courses, onBookmark)
+    }
+}
+
+@Composable
+fun SearchAndFilter() {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+    ) {
+        AppTextField(
+            "", {},
+            placeholder = R.string.main_search,
+            leadingIcon = {
                 Image(
-                    painterResource(R.drawable.main_filter),
-                    stringResource(R.string.main_filter)
+                    painterResource(R.drawable.main_search),
+                    stringResource(R.string.main_search)
                 )
-            }
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            },
+            color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
-                .clickable(onClick = { onSort() })
+                .fillMaxWidth(0.8f)
+                .weight(1f)
+        )
+        BackgroundRow(
+            isRound = true,
+            isCard = false
         ) {
-            BodyText(
-                R.string.main_sort,
-                color = MaterialTheme.colorScheme.tertiary
-            )
             Image(
-                painterResource(R.drawable.main_sort),
-                stringResource(R.string.main_sort)
+                painterResource(R.drawable.main_filter),
+                stringResource(R.string.main_filter)
             )
         }
+    }
+}
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(state.courses) { course ->
-                CourseCard(
-                    course,
-                    onBookmark
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
+@Composable
+fun SortCourses(
+    onSort: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .clickable(onClick = { onSort() })
+    ) {
+        BodyText(
+            R.string.main_sort,
+            color = MaterialTheme.colorScheme.tertiary
+        )
+        Image(
+            painterResource(R.drawable.main_sort),
+            stringResource(R.string.main_sort)
+        )
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.domain.models
+package com.example.course.models
 
 data class Course(
     val id: Int,

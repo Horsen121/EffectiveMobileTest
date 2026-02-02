@@ -1,4 +1,4 @@
-package com.example.ui.elements
+package com.example.course.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -24,14 +24,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.domain.models.Course
-import com.example.ui.R
+import com.example.course.models.Course
 import com.example.ui.components.BackgroundRow
 import com.example.ui.components.BodyText
 import com.example.ui.components.LabelText
 import com.example.ui.theme.EffectiveMobileTestTheme
 import com.example.ui.utils.toPrice
 import com.example.ui.utils.toTextDate
+import com.example.shared.R
 
 @Composable
 fun CourseCard(
@@ -62,7 +62,7 @@ fun CourseCard(
                 Box(modifier = Modifier.fillMaxSize()) {
                     Image(
                         painterResource(R.drawable.mock_course_image),
-                        stringResource(R.string.ui_course_image),
+                        stringResource(R.string.shared_course_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -84,7 +84,7 @@ fun CourseCard(
                             ) {
                                 Image(
                                     painterResource(R.drawable.ui_bookmark),
-                                    stringResource(R.string.ui_course_bookmark),
+                                    stringResource(R.string.shared_course_bookmark),
                                     colorFilter = ColorFilter.tint(
                                         if (course.hasLike) MaterialTheme.colorScheme.tertiary
                                                 else MaterialTheme.colorScheme.onBackground),
@@ -161,13 +161,13 @@ fun CourseCard(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         LabelText(
-                            text = R.string.ui_course_detailed,
+                            text = R.string.shared_course_detailed,
                             isHeadline = false,
                             color = MaterialTheme.colorScheme.tertiary
                         )
                         Image(
                             painterResource(R.drawable.ui_right_arrow),
-                            stringResource(R.string.ui_course_detailed),
+                            stringResource(R.string.shared_course_detailed),
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
                         )
                     }

@@ -3,8 +3,8 @@ package com.example.data.repositories
 import com.example.data.mappers.toDB
 import com.example.data.mappers.toDomain
 import com.example.database.dao.CourseDAO
-import com.example.domain.models.Course as DomainCourse
-import com.example.domain.repositories.CourseRepository
+import com.example.course.models.Course as DomainCourse
+import com.example.course.repositories.CourseRepository
 import com.example.network.RemoteApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

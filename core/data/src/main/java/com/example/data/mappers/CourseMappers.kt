@@ -1,6 +1,6 @@
 package com.example.data.mappers
 
-import com.example.domain.models.Course as DomainCourse
+import com.example.course.models.Course as DomainCourse
 import com.example.database.entity.Course as DBCourse
 import com.example.network.dto.GetCourseResponse
 import kotlinx.coroutines.flow.Flow

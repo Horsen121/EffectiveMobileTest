@@ -49,7 +49,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:database"))
     implementation(project(":core:network"))
-    implementation(project(":domain"))
+    implementation(project(":shared"))
     implementation(project(":feature:login"))
     implementation(project(":feature:favourites"))
     implementation(project(":feature:main"))
