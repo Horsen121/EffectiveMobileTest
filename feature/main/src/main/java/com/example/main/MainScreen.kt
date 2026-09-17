@@ -1,11 +1,10 @@
 package com.example.main
 
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,9 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.course.CourseState
 import com.example.course.models.Course
 import com.example.course.ui.ColumnOfCourses
 import com.example.ui.components.AppTextField
@@ -39,106 +38,112 @@ import com.example.ui.theme.EffectiveMobileTestTheme
 @Composable
 fun MainScreen(
     paddingValues: PaddingValues,
-    viewModel: MainScreenVM = hiltViewModel()
+    viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadData()
-    }
-
-    Crossfade(targetState = state) { currentState ->
-        when (currentState) {
-            is CourseState.Initial, CourseState.Loading -> {}
-            is CourseState.Content -> {
-                MainScreenContent(
-                    currentState,
-                    { viewModel.onSort() },
-                    { viewModel.changeBookmarkOfCourse(it) },
-                    paddingValues
-                )
-            }
-            is CourseState.Error -> {
-                Toast.makeText(context, currentState.message, Toast.LENGTH_SHORT).show()
-                Log.e("TAG", "PizzaCardScreen: ${currentState.message}")
+    LaunchedEffect(viewModel.effects) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is MainUiEffect.ShowToast -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
+
+    MainScreenContent(
+        state = state,
+        onSortClick = viewModel::onToggleSort,
+        onBookmarkClick = viewModel::onBookmarkClicked,
+        modifier = Modifier.padding(paddingValues)
+    )
 }
 
 @Composable
-private fun MainScreenContent(
-    state: CourseState.Content,
-    onSort: () -> Unit,
-    onBookmark: (Course) -> Unit,
-    paddingValues: PaddingValues
+fun MainScreenContent(
+    state: MainUiState,
+    onSortClick: () -> Unit,
+    onBookmarkClick: (Course) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-    ) {
-        SearchAndFilter()
-
-        SortCourses(onSort)
-
-        ColumnOfCourses(state.courses, onBookmark)
-    }
-}
-
-@Composable
-fun SearchAndFilter() {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-    ) {
-        AppTextField(
-            "", {},
-            placeholder = R.string.main_search,
-            leadingIcon = {
-                Image(
-                    painterResource(R.drawable.main_search),
-                    stringResource(R.string.main_search)
-                )
-            },
-            color = MaterialTheme.colorScheme.secondary,
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .weight(1f)
-        )
-        BackgroundRow(
-            isRound = true,
-            isCard = false
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
-            Image(
-                painterResource(R.drawable.main_filter),
-                stringResource(R.string.main_filter)
+            SearchAndFilter()
+
+            SortCourses(onSortClick = onSortClick)
+
+            ColumnOfCourses(
+                courses = state.courses,
+                onBookmark = onBookmarkClick
+            )
+        }
+
+        if (state.isLoading && state.courses.isEmpty()) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
 }
 
 @Composable
-fun SortCourses(
-    onSort: () -> Unit
+private fun SearchAndFilter(modifier: Modifier = Modifier) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp)
+    ) {
+        AppTextField(
+            text = "",
+            onValueChange = {},
+            placeholder = R.string.main_search,
+            leadingIcon = {
+                Image(
+                    painter = painterResource(R.drawable.main_search),
+                    contentDescription = stringResource(R.string.main_search)
+                )
+            },
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.weight(1f)
+        )
+        BackgroundRow(
+            isRound = true,
+            isCard = false
+        ) {
+            Image(
+                painter = painterResource(R.drawable.main_filter),
+                contentDescription = stringResource(R.string.main_filter)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SortCourses(
+    onSortClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .clickable(onClick = { onSort() })
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.clickable(onClick = onSortClick)
     ) {
         BodyText(
-            R.string.main_sort,
+            text = R.string.main_sort,
             color = MaterialTheme.colorScheme.tertiary
         )
         Image(
-            painterResource(R.drawable.main_sort),
-            stringResource(R.string.main_sort)
+            painter = painterResource(R.drawable.main_sort),
+            contentDescription = stringResource(R.string.main_sort)
         )
     }
 }
@@ -210,9 +215,9 @@ private fun MainScreenPreview() {
             modifier = Modifier.fillMaxSize()
         ) { padding ->
             MainScreenContent(
-                CourseState.Content(courses),
+                MainUiState(courses),
                 {}, {},
-                padding
+                Modifier.padding(padding)
             )
         }
     }

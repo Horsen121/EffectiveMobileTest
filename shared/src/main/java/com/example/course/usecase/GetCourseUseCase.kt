@@ -8,7 +8,7 @@ class GetCourseUseCase(
 ) {
     suspend operator fun invoke(id: Int): Course? {
         return try {
-            repository.getCourseById(id,false)
+            repository.getCourseById(id)
         } catch (_: Exception) {
             null
         }

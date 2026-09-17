@@ -1,6 +1,9 @@
 package com.example.network.dto
 
-data class GetCourseResponse(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class CourseDto(
     val id: Int,
     val title: String,
     val text: String,

@@ -1,21 +1,21 @@
 package com.example.favourites
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -23,58 +23,84 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.course.CourseState
 import com.example.course.models.Course
 import com.example.course.ui.ColumnOfCourses
+import com.example.ui.components.BodyText
 import com.example.ui.components.TitleText
 import com.example.ui.theme.EffectiveMobileTestTheme
 
 @Composable
 fun FavouritesScreen(
     paddingValues: PaddingValues,
-    viewModel: FavouritesVM = hiltViewModel()
+    viewModel: FavouritesViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadData()
-    }
-
-    Crossfade(targetState = state) { currentState ->
+    Crossfade(targetState = state, label = "FavouritesCrossfade") { currentState ->
         when (currentState) {
-            is CourseState.Initial, CourseState.Loading -> {}
+            is CourseState.Initial, CourseState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
             is CourseState.Content -> {
                 FavouritesScreenContent(
-                    currentState,
-                    { viewModel.changeBookmarkOfCourse(it) },
-                    paddingValues
+                    courses = currentState.courses,
+                    onBookmarkClick = viewModel::onRemoveBookmark,
+                    modifier = Modifier.padding(paddingValues)
                 )
             }
             is CourseState.Error -> {
-                Toast.makeText(context, currentState.message, Toast.LENGTH_SHORT).show()
-                Log.e("TAG", "PizzaCardScreen: ${currentState.message}")
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    BodyText(
+                        text = currentState.message,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun FavouritesScreenContent(
-    state: CourseState.Content,
-    onBookmark: (Course) -> Unit,
-    paddingValues: PaddingValues
+fun FavouritesScreenContent(
+    courses: List<Course>,
+    onBookmarkClick: (Course) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(horizontal = 16.dp)
     ) {
-        TitleText(
-            R.string.favourites_
-        )
+        TitleText(text = R.string.favourites_title)
 
-        ColumnOfCourses(state.courses, onBookmark)
+        if (courses.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                BodyText(
+                    text = stringResource(R.string.favourites_empty),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            ColumnOfCourses(
+                courses = courses,
+                onBookmark = onBookmarkClick
+            )
+        }
     }
 }
 
@@ -144,7 +170,7 @@ private fun FavouritesScreenPreview() {
             contentWindowInsets = WindowInsets(left = 16.dp, right = 16.dp, top = 32.dp),
             modifier = Modifier.fillMaxSize()
         ) { padding ->
-            FavouritesScreenContent(CourseState.Content(courses), {}, padding)
+            FavouritesScreenContent(courses, {}, Modifier.padding(padding))
         }
     }
 }
