@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,13 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.course.models.Course
+import com.example.shared.R
 import com.example.ui.components.BackgroundRow
 import com.example.ui.components.BodyText
 import com.example.ui.components.LabelText
 import com.example.ui.theme.EffectiveMobileTestTheme
 import com.example.ui.utils.toPrice
 import com.example.ui.utils.toTextDate
-import com.example.shared.R
 
 @Composable
 fun CourseCard(
@@ -54,81 +55,10 @@ fun CourseCard(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Card(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Image(
-                        painterResource(R.drawable.mock_course_image),
-                        stringResource(R.string.shared_course_image),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    Column(
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.Start,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(12.dp)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.End,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            BackgroundRow(
-                                isRound = true,
-                                height = 28.dp
-                            ) {
-                                Image(
-                                    painterResource(R.drawable.ui_bookmark),
-                                    stringResource(R.string.shared_course_bookmark),
-                                    colorFilter = ColorFilter.tint(
-                                        if (course.hasLike) MaterialTheme.colorScheme.tertiary
-                                                else MaterialTheme.colorScheme.onBackground),
-                                    modifier = Modifier
-                                        .clickable(onClick = { onBookmark(course) })
-                                )
-                            }
-                        }
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            BackgroundRow(
-                                isCard = true
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(4.dp)
-                                ) {
-                                    Image(
-                                        painterResource(R.drawable.ui_star),
-                                        null
-                                    )
-                                    LabelText(
-                                        course.rate.toString(),
-                                        isHeadline = false
-                                    )
-                                }
-                            }
-                            BackgroundRow(
-                                isCard = true,
-                                modifier = Modifier.padding(4.dp)
-                            ) {
-                                LabelText(
-                                    course.startDate.toTextDate(),
-                                    isHeadline = false
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            CourseInfoWithBackgroundImage(
+                course,
+                onBookmark
+            )
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(11.dp),
@@ -174,6 +104,125 @@ fun CourseCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ColumnScope.CourseInfoWithBackgroundImage(
+    course: Course,
+    onBookmark: (Course) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .weight(1f)
+            .fillMaxWidth()
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CourseBackground()
+
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp)
+            ) {
+                CourseBookmark(
+                    course,
+                    onBookmark
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CourseRate(course.rate.toString())
+
+                    CourseStartDate(course.startDate.toTextDate())
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CourseBackground(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        painterResource(R.drawable.mock_course_image),
+        stringResource(R.string.shared_course_image),
+        contentScale = ContentScale.Crop,
+        modifier = modifier.fillMaxSize()
+    )
+}
+
+@Composable
+private fun CourseBookmark(
+    course: Course,
+    onBookmark: (Course) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        BackgroundRow(
+            isRound = true,
+            height = 28.dp
+        ) {
+            Image(
+                painterResource(R.drawable.ui_bookmark),
+                stringResource(R.string.shared_course_bookmark),
+                colorFilter = ColorFilter.tint(
+                    if (course.hasLike) MaterialTheme.colorScheme.tertiary
+                    else MaterialTheme.colorScheme.onBackground),
+                modifier = modifier
+                    .clickable(onClick = { onBookmark(course) })
+            )
+        }
+    }
+}
+
+@Composable
+private fun CourseRate(
+    rate: String,
+    modifier: Modifier = Modifier
+) {
+    BackgroundRow(
+        isCard = true
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier.padding(4.dp)
+        ) {
+            Image(
+                painterResource(R.drawable.ui_star),
+                null
+            )
+            LabelText(
+                rate,
+                isHeadline = false
+            )
+        }
+    }
+}
+
+@Composable
+private fun CourseStartDate(
+    startDate: String,
+    modifier: Modifier = Modifier
+) {
+    BackgroundRow(
+        isCard = true,
+        modifier = modifier.padding(4.dp)
+    ) {
+        LabelText(
+            startDate,
+            isHeadline = false
+        )
     }
 }
 

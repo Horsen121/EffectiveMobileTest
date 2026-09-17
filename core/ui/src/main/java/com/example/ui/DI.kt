@@ -15,7 +15,7 @@ object UiModule {
 
     @Singleton
     class StringResourceProvider @Inject constructor(
-        @ApplicationContext private val context: Context
+        @param:ApplicationContext private val context: Context
     ) {
         fun getString(@StringRes resId: Int) = context.getString(resId)
     }

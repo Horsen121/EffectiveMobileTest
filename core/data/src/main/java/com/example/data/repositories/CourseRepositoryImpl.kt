@@ -18,11 +18,13 @@ class CourseRepositoryImpl @Inject constructor(
             MockData.getCourses()
         } else dao.getCourses().map { it.toDomain() }
     }
+
     override suspend fun getCourseById(id: Int, fromNetwork: Boolean): DomainCourse? {
         return if(fromNetwork) {
             null
         } else dao.getCourseById(id)?.toDomain()
     }
     override suspend fun insertCourse(course: DomainCourse) = dao.insertCourse(course.toDB())
+
     override suspend fun deleteCourse(course: DomainCourse) = dao.deleteCourse(course.toDB())
 }
