@@ -6,7 +6,7 @@ import com.example.course.models.Course
 import com.example.course.usecase.GetCoursesUseCase
 import com.example.course.usecase.RefreshCoursesUseCase
 import com.example.course.usecase.ToggleBookmarkUseCase
-import com.example.ui.UiModule
+import com.example.ui.utils.StringResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ class MainScreenViewModel @Inject constructor(
     getCoursesUseCase: GetCoursesUseCase,
     private val refreshCoursesUseCase: RefreshCoursesUseCase,
     private val toggleBookmarkUseCase: ToggleBookmarkUseCase,
-    private val stringProvider: UiModule.StringResourceProvider
+    private val stringProvider: StringResourceProvider
 ): ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)

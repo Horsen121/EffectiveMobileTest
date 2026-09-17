@@ -6,7 +6,7 @@ import com.example.course.CourseState
 import com.example.course.models.Course
 import com.example.course.usecase.GetFavouritesCoursesUseCase
 import com.example.course.usecase.ToggleBookmarkUseCase
-import com.example.ui.UiModule
+import com.example.ui.utils.StringResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class FavouritesViewModel @Inject constructor(
     getFavouritesCoursesUseCase: GetFavouritesCoursesUseCase,
     private val toggleBookmarkUseCase: ToggleBookmarkUseCase,
-    private val stringProvider: UiModule.StringResourceProvider
+    private val stringProvider: StringResourceProvider
 ): ViewModel() {
 
     val state: StateFlow<CourseState> = getFavouritesCoursesUseCase()
