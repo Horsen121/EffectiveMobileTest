@@ -1,52 +1,42 @@
 package com.example.data.mappers
 
-import com.example.course.models.Course as DomainCourse
-import com.example.database.entity.Course as DBCourse
-import com.example.network.dto.GetCourseResponse
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import com.example.course.models.Course
+import com.example.database.entity.CourseEntity
+import com.example.network.dto.CourseDto
 
-fun GetCourseResponse.toDomain(): DomainCourse {
-    return DomainCourse(
-        id = this.id,
-        title = this.title,
-        text = this.text,
-        price = this.price,
-        rate = this.rate,
-        startDate = this.startDate,
-        hasLike = this.hasLike,
-        publishDate = this.publishDate,
-    )
-}
-fun List<GetCourseResponse>?.toDomain(): Flow<List<DomainCourse>> {
-    return flowOf(this?.map { it.toDomain() } ?: emptyList())
-}
+fun CourseDto.toEntity(hasLike: Boolean = this.hasLike): CourseEntity = CourseEntity(
+    id = id,
+    title = title,
+    text = text,
+    price = price,
+    rate = rate,
+    startDate = startDate,
+    hasLike = hasLike,
+    publishDate = publishDate
+)
 
-fun DBCourse.toDomain(): DomainCourse {
-    return DomainCourse(
-        id = this.id,
-        title = this.title,
-        text = this.text,
-        price = this.price,
-        rate = this.rate,
-        startDate = this.startDate,
-        hasLike = this.hasLike,
-        publishDate = this.publishDate,
-    )
-}
-fun List<DBCourse>.toDomain(): List<DomainCourse> {
-    return this.map { it.toDomain() }
-}
+fun List<CourseDto>.toEntities(): List<CourseEntity> = map { it.toEntity() }
 
-fun DomainCourse.toDB(): DBCourse {
-    return DBCourse(
-        id = this.id,
-        title = this.title,
-        text = this.text,
-        price = this.price,
-        rate = this.rate,
-        startDate = this.startDate,
-        hasLike = this.hasLike,
-        publishDate = this.publishDate,
-    )
-}
+fun CourseEntity.toDomain(): Course = Course(
+    id = id,
+    title = title,
+    text = text,
+    price = price,
+    rate = rate,
+    startDate = startDate,
+    hasLike = hasLike,
+    publishDate = publishDate
+)
+
+fun List<CourseEntity>.toDomain(): List<Course> = map { it.toDomain() }
+
+fun Course.toEntity(): CourseEntity = CourseEntity(
+    id = id,
+    title = title,
+    text = text,
+    price = price,
+    rate = rate,
+    startDate = startDate,
+    hasLike = hasLike,
+    publishDate = publishDate
+)

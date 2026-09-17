@@ -1,29 +1,28 @@
 package com.example.login
 
-import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ui.components.AppButton
 import com.example.ui.components.AppTextButton
 import com.example.ui.components.AppTextField
@@ -35,51 +34,75 @@ import com.example.ui.theme.EffectiveMobileTestTheme
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isError by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(viewModel.effects) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is LoginUiEffect.NavigateToHome -> onLoginSuccess()
+            }
+        }
+    }
+
+    LoginScreenContent(
+        state = state,
+        onEmailChange = viewModel::onEmailChanged,
+        onPasswordChange = viewModel::onPasswordChanged,
+        onLoginClick = viewModel::onLoginClicked,
+        modifier = Modifier.padding(paddingValues)
+    )
+}
+
+@Composable
+fun LoginScreenContent(
+    state: LoginUiState,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(horizontal = 16.dp)
     ) {
         TitleText(
-            text = R.string.login_,
+            text = R.string.login_title,
             isHeadline = true,
-            modifier = Modifier
-                .padding(
-                    top = 140.dp.minus(paddingValues.calculateTopPadding()),
-                    bottom = 16.dp
-                )
+            modifier = Modifier.padding(top = 100.dp, bottom = 16.dp)
         )
 
-        Column {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             AppTextField(
-                text = email,
-                onValueChange = {
-                    val filtered = it.filter { ch ->
-                        ch.code !in 0x0400..0x04FF
-                    }
-                    email = filtered
-                },
+                text = state.email,
+                onValueChange = onEmailChange,
                 placeholder = R.string.login_email_placeholder,
                 title = R.string.login_email_title,
                 keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
                 ),
-                isError = isError,
-                supportingText = {if(isError) BodyText(R.string.login_email_error)}
+                isError = state.emailErrorResId != null,
+                supportingText = {
+                    state.emailErrorResId?.let { errorRes ->
+                        BodyText(
+                            text = errorRes,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
             )
 
             AppTextField(
-                text = password,
-                onValueChange = { password = it },
+                text = state.password,
+                onValueChange = onPasswordChange,
                 placeholder = R.string.login_password_placeholder,
                 title = R.string.login_password_title,
+                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
@@ -87,17 +110,10 @@ fun LoginScreen(
             )
         }
 
-
         AppButton(
-            text = R.string.login_,
-            onClick = {
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    isError = true
-                } else {
-                    if(email.isNotEmpty() && password.isNotEmpty())
-                        onLoginSuccess()
-                }
-            }
+            text = R.string.login_button,
+            enabled = state.isLoginEnabled,
+            onClick = onLoginClick
         )
 
         Column(
@@ -117,16 +133,19 @@ fun LoginScreen(
                 enabled = false
             )
         }
+
         HorizontalDivider(
-            Modifier
-                .height(1.dp)
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 16.dp),
-            color = MaterialTheme.colorScheme.surface
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.surfaceVariant
         )
 
-        VkOkButton(Modifier.padding(top = 32.dp))
+        VkOkButton(modifier = Modifier.padding(top = 16.dp))
     }
 }
+
 
 @Preview
 @Composable

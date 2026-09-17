@@ -1,4 +1,5 @@
 <resources>
-    <string name="favourites_">Избранное</string>
+    <string name="favourites_title">Избранное</string>
+    <string name="favourites_empty">Ваш список избранных курсов пока пуст</string>
     <string name="favourites_error_db">Избранное</string>
 </resources>

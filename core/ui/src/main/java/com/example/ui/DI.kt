@@ -1,22 +1,19 @@
 package com.example.ui
 
-import android.content.Context
-import androidx.annotation.StringRes
+import com.example.ui.utils.AndroidStringResourceProvider
+import com.example.ui.utils.StringResourceProvider
+import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UiModule {
-
+abstract class UiModule {
+    @Binds
     @Singleton
-    class StringResourceProvider @Inject constructor(
-        @param:ApplicationContext private val context: Context
-    ) {
-        fun getString(@StringRes resId: Int) = context.getString(resId)
-    }
+    abstract fun bindStringResourceProvider(
+        impl: AndroidStringResourceProvider
+    ): StringResourceProvider
 }

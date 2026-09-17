@@ -57,7 +57,7 @@ fun BottomNavPanel(
                 icon = {
                     Image(
                         painter = painterResource(com.example.ui.R.drawable.ui_bookmark),
-                        contentDescription = stringResource(com.example.favourites.R.string.favourites_),
+                        contentDescription = stringResource(com.example.favourites.R.string.favourites_title),
                         colorFilter = ColorFilter.tint(if (currentRoute == Routing.FavouritesScreen.route)
                             MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier.scale(1.5f)
@@ -65,7 +65,7 @@ fun BottomNavPanel(
                 },
                 label = {
                     LabelText(
-                        text =com.example.favourites.R.string.favourites_,
+                        text =com.example.favourites.R.string.favourites_title,
                         color = if (currentRoute == Routing.FavouritesScreen.route)
                             MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onBackground
                     )

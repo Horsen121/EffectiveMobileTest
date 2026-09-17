@@ -1,13 +1,11 @@
 package com.example.data.mock
 
-import com.example.course.models.Course
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import com.example.network.dto.CourseDto
 
 object MockData {
-    fun getCourses(): Flow<List<Course>> {
-        return flowOf(listOf(
-            Course(
+    fun getCourses(): List<CourseDto> {
+        return listOf(
+            CourseDto(
                 id = 100,
                 title = "Java-разработчик с нуля",
                 text = "Освойте backend-разработку и программирование на Java, фреймворки Spring и Maven, " +
@@ -18,7 +16,7 @@ object MockData {
                 hasLike = false,
                 publishDate = "2024-02-02"
             ),
-            Course(
+            CourseDto(
                 id = 101,
                 title = "3D-дженералист",
                 text = "Освой профессию 3D-дженералиста и стань универсальным специалистом, " +
@@ -29,7 +27,7 @@ object MockData {
                 hasLike = false,
                 publishDate = "2024-01-20"
             ),
-            Course(
+            CourseDto(
                 id = 102,
                 title = "Python Advanced. Для продвинутых",
                 text = "Вы узнаете, как разрабатывать гибкие и высокопроизводительные серверные " +
@@ -41,7 +39,7 @@ object MockData {
                 hasLike = true,
                 publishDate = "2024-08-10"
             ),
-            Course(
+            CourseDto(
                 id = 103,
                 title = "Системный аналитик",
                 text = "Освоите навыки системной аналитики с нуля за 9 месяцев. Будет очень много практики на реальных проектах, чтобы вы могли сразу стартовать в IT.",
@@ -51,7 +49,7 @@ object MockData {
                 hasLike = false,
                 publishDate = "2024-01-13"
             ),
-            Course(
+            CourseDto(
                 id = 104,
                 title = "Аналитик данных",
                 text = "В этом уроке вы узнаете, кто такой аналитик данных и какие задачи он решает. " +
@@ -62,6 +60,6 @@ object MockData {
                 hasLike = false,
                 publishDate = "2024-03-12"
             )
-        ))
+        )
     }
 }
